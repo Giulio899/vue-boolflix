@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container-movies {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container-movies .item-movie {
+  flex-basis: calc(100% / 5 - 20px);
+  border: 1px solid black;
+  padding: 5px;
+  margin: 20px;
+}
+
+.container-movies .item-movie span {
+  color: red;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Boolflix</title>
+  <!-- link CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- CDN Vue -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <!-- CDN AXIOS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+  <div id="app">
+
+    <input type="query" placeholder="Cerca un titolo" v-model="query" @keyup.enter="search">
+
+    <button @click="search">Cerca</button>
+
+    <div class="container-movies">
+
+      <div class="item-movie" v-for="item in arrayMovie">
+        <h3 class="title"><span>Titolo: </span>{{ item.title }}</h3>
+        <h3 class="title-original"><span>Titolo originale: </span>{{ item.original_title }}</h3>
+        <h4 class="language"><span>Lingua: </span>{{ item.original_language }}</h4>
+        <h4 class="vote"><span>Voto: </span>{{ item.vote_average }}</h4>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <script src="js/script.js" charset="utf-8"></script>
+</body>
+</html>
