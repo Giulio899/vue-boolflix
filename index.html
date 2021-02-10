@@ -29,6 +29,8 @@
         <h3 class="title-original"><span>Titolo originale: </span>{{ item.original_title }}</h3>
         <h4 class="language"><span>Lingua: </span>{{ item.original_language }}</h4>
         <h4 class="vote"><span>Voto: </span>{{ item.vote_average }}</h4>
+        <img v-if="item.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + item.poster_path" :alt="item.title">
+        <img v-else src="img/not-found.jpg" :alt="item.title">
       </div>
 
     </div>

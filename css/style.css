@@ -19,3 +19,7 @@
 .container-movies .item-movie span {
   color: red;
 }
+
+.container-movies .item-movie img {
+  width: 100%;
+}

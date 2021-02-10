@@ -27,16 +27,14 @@ var app = new Vue({
         })
         .then((result) => {
           this.arrayMovie = result.data.results;
-          console.log(this.arrayMovie);
-        });
-
-    },
+        })
+        .catch((error) => alert('Errore'));
+    }, // fine searchMovie()
 
     search() {
-      console.log(this.query);
       this.searchMovie();
-      this.query="";
-    }
+      this.query = "";
+    } // fine search()
 
   }
 });
