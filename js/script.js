@@ -18,58 +18,36 @@ var app = new Vue({
   methods: {
     searchMovie() {
 
-        axios.all([
 
-          axios.get("https://api.themoviedb.org/3/search/movie", {
-            params: {
-              api_key: this.api,
-              language: this.language,
-              query: this.query,
-            }
-          }),
-          axios.get("https://api.themoviedb.org/3/search/tv", {
+
+
+
+      // chiamata axios a db film
+      axios
+        .get("https://api.themoviedb.org/3/search/movie", {
+          params: {
+            api_key: this.api,
+            language: this.language,
+            query: this.query,
+          }
+        })
+        .then((result) => {
+          this.arrayMovies = result.data.results;
+        })
+        .catch((error) => alert('Errore')); //fine axios
+
+        // chiamata axios a db serietv
+        axios
+          .get("https://api.themoviedb.org/3/search/tv", {
             params: {
               api_key: this.api,
               language: this.language,
               query: this.query,
             }
           })
-        ])
-
-      .then(axios.spread((response1, response2) => {
-        this.arrayMovies = response1.data.response;
-        console.log(this.arrayMovies);
-        // this.arrayMovies = this.arrayMovies.concat(response2.data.response);
-      }))
-
-
-
-      // chiamata axios a db film
-      // axios
-      //   .get("https://api.themoviedb.org/3/search/movie", {
-      //     params: {
-      //       api_key: this.api,
-      //       language: this.language,
-      //       query: this.query,
-      //     }
-      //   })
-      //   .then((result) => {
-      //     this.arrayMovies = result.data.results;
-      //   })
-      //   .catch((error) => alert('Errore')); //fine axios
-      //
-      //   // chiamata axios a db serietv
-      //   axios
-      //     .get("https://api.themoviedb.org/3/search/tv", {
-      //       params: {
-      //         api_key: this.api,
-      //         language: this.language,
-      //         query: this.query,
-      //       }
-      //     })
-      //     .then((result) => {
-      //       this.arrayMovies = this.arrayMovies.concat(result.data.results);
-      //     })
+          .then((result) => {
+            this.arrayMovies = this.arrayMovies.concat(result.data.results);
+          })
 
     }, // fine searchMovie()
 

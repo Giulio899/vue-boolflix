@@ -129,6 +129,10 @@ header .search input:hover + .fa-search {
   margin: 5px;
 }
 
+.container-movies .item-movie .language img {
+  width: 25px;
+}
+
 .container-movies .item-movie .vote {
   color: #fa9c1c;
 }
