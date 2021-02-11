@@ -13,10 +13,11 @@ var app = new Vue({
     query: '',
     api: '640221ae9d6dfeb3b525b2e0ac83a670',
     language: 'it-IT',
-    arrayMovie: ''
+    arrayMovies: ''
   },
   methods: {
     searchMovie() {
+      // chiamata axios a db film
       axios
         .get("https://api.themoviedb.org/3/search/movie", {
           params: {
@@ -26,15 +27,29 @@ var app = new Vue({
           }
         })
         .then((result) => {
-          this.arrayMovie = result.data.results;
+          this.arrayMovies = result.data.results;
         })
-        .catch((error) => alert('Errore'));
+        .catch((error) => alert('Errore')); //fine axios
+
+        // chiamata axios a db serietv
+        axios
+          .get("https://api.themoviedb.org/3/search/tv", {
+            params: {
+              api_key: this.api,
+              language: this.language,
+              query: this.query,
+            }
+          })
+          .then((result) => {
+            this.arrayMovies = this.arrayMovies.concat(result.data.results);
+          })
+
     }, // fine searchMovie()
 
     search() {
       this.searchMovie();
       this.query = "";
-    } // fine search()
+    }, // fine search()
 
-  }
+  } // fine methods
 });

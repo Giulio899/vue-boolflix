@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Boolflix</title>
+  <!-- link Google Font -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- CDN FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
   <!-- link CSS -->
   <link rel="stylesheet" href="css/style.css">
   <!-- CDN Vue -->
@@ -18,17 +23,38 @@
 
   <div id="app">
 
-    <input type="query" placeholder="Cerca un titolo" v-model="query" @keyup.enter="search">
+    <header>
+      <!-- logo -->
+        <img src="img/logo-prime.png" alt="Logo Boolflix">
+      <!-- nav centrale -->
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Store</a></li>
+          <li><a href="#">Canali</a></li>
+          <li class="dropdown"><a href="#">Categorie</a></li>
+        </ul>
+      </nav>
+      <!-- ricerca -->
+      <div class="search">
+        <input type="query" placeholder="Cerca un titolo" v-model="query" @keyup.enter="search">
+        <!-- <button @click="search">Cerca</button> -->
+        <i class="fas fa-search"></i>
+      </div>
+    </header>
 
-    <button @click="search">Cerca</button>
 
     <div class="container-movies">
 
-      <div class="item-movie" v-for="item in arrayMovie">
+      <div class="item-movie" v-for="item in arrayMovies">
         <h3 class="title"><span>Titolo: </span>{{ item.title }}</h3>
         <h3 class="title-original"><span>Titolo originale: </span>{{ item.original_title }}</h3>
         <h4 class="language"><span>Lingua: </span>{{ item.original_language }}</h4>
-        <h4 class="vote"><span>Voto: </span>{{ item.vote_average }}</h4>
+        <h4 class="vote">
+          <!--stella piena--><i class="fas fa-star" v-for="i in Math.floor(Math.round(item.vote_average) / 2)"></i><!-- mezza stella--><i class="fas fa-star-half-alt" v-if="(Math.round(item.vote_average) / 2) % 1 != 0"></i><!-- stella vuota--><i class="far fa-star" v-for="i in (5 - Math.round(Math.round(item.vote_average) / 2))"></i>
+
+
+        </h4>
         <img v-if="item.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + item.poster_path" :alt="item.title">
         <img v-else src="img/not-found.jpg" :alt="item.title">
       </div>
