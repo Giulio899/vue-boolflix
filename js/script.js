@@ -18,6 +18,7 @@ var app = new Vue({
     flagsAvailable: ['de', 'en', 'es', 'fr', 'ko', 'ro', 'it', 'ja', 'zh']
   },
   mounted() {
+    // chiamata axios a generi film
     axios
       .get("https://api.themoviedb.org/3/genre/movie/list", {
         params: {
@@ -26,10 +27,25 @@ var app = new Vue({
       })
       .then((result) => {
         this.genres = result.data.genres;
-        console.log(this.genres);
+        // console.log(this.genres);
       })
       .catch((error) => alert('Errore'));
-  },
+
+    // chiamata axios a generi film
+    axios
+      .get("https://api.themoviedb.org/3/genre/tv/list", {
+        params: {
+          api_key: this.api
+        }
+      })
+      .then((result) => {
+        this.genres.concat(result.data.genres);
+        console.log('1', this.genres);
+      })
+      .catch((error) => alert('Errore'));
+
+
+  }, // fine mounted
   methods: {
     searchMovie() {
 
