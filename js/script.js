@@ -14,14 +14,24 @@ var app = new Vue({
     api: '640221ae9d6dfeb3b525b2e0ac83a670',
     language: 'it-IT',
     arrayMovies: '',
+    genres: '',
     flagsAvailable: ['de', 'en', 'es', 'fr', 'ko', 'ro', 'it', 'ja', 'zh']
+  },
+  mounted() {
+    axios
+      .get("https://api.themoviedb.org/3/genre/movie/list", {
+        params: {
+          api_key: this.api
+        }
+      })
+      .then((result) => {
+        this.genres = result.data.genres;
+        console.log(this.genres);
+      })
+      .catch((error) => alert('Errore'));
   },
   methods: {
     searchMovie() {
-
-
-
-
 
       // chiamata axios a db film
       axios
@@ -33,10 +43,10 @@ var app = new Vue({
           }
         })
         .then((result) => {
-          this.arrayMovies = this.arrayMovies.concat(result.data.results);
+          this.arrayMovies = result.data.results;
 
         })
-        .catch((error) => alert('Errore')); //fine axios
+        .catch((error) => alert('Errore')); //fine prima chiamata axios
 
         // chiamata axios a db serietv
         axios
@@ -50,13 +60,31 @@ var app = new Vue({
           .then((result) => {
             this.arrayMovies = this.arrayMovies.concat(result.data.results);
           })
+          .catch((error) => alert('Errore')); //fine seconda chiamata axios
 
     }, // fine searchMovie()
 
     search() {
       this.searchMovie();
       this.query = "";
-    }, // fine search()
+    }, // fine search(): effettua la ricerca in base alla query digitata
+
+
+    getYear(fullDate) {
+      return fullDate.substr(0, 4);
+    }, // fine getYear(): dalla data completa estrae solo le cifre dell'anno
+
+    getGenre(idToCheck) {
+      var thisGenre;
+      this.genres.forEach((item) => {
+        if (idToCheck == item.id) {
+          console.log(item.name);
+          thisGenre = item.name;
+          return thisGenre;
+        }
+      });
+      return thisGenre;
+    } // fine getGenre(): individua il genere del film in base all'id
 
   } // fine methods
 });
