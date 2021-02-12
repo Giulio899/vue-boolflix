@@ -47,18 +47,29 @@
     <div class="container-movies">
 
       <div class="item-movie" v-for="item in arrayMovies">
-        <h3 class="title"><span>Titolo: </span>{{ item.title || item.name }}</h3>
-        <h3 class="title-original"><span>Titolo originale: </span>{{ item.original_title || item.original_name }}</h3>
-        <!-- <h4 class="language"><span>Lingua: </span>{{ item.original_language }}</h4> -->
-        <h4 class="language"><span>Lingua: </span> <img class="language" :src="'img/' + item.original_language + '.png'" alt=""></h4>
 
-        <h4 class="vote">
-          <!--stella piena--><i class="fas fa-star" v-for="i in Math.floor(Math.round(item.vote_average) / 2)"></i><!-- mezza stella--><i class="fas fa-star-half-alt" v-if="(Math.round(item.vote_average) / 2) % 1 != 0"></i><!-- stella vuota--><i class="far fa-star" v-for="i in (5 - Math.round(Math.round(item.vote_average) / 2))"></i>
-
-
-        </h4>
+        <!-- immagine -->
         <img v-if="item.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + item.poster_path" :alt="item.title">
         <img v-else src="img/not-found.jpg" :alt="item.title">
+
+        <!-- box nascosto con informazioni -->
+        <div class="hidden">
+          <!-- titolo -->
+          <h3 class="title">{{ item.title || item.name }}</h3>
+          <p class="description">{{ (item.overview.length > 0) ? item.overview : 'Descrizione non disponibile' }}</p>
+          <!-- details(language and rate) -->
+          <div class="details">
+            <img v-if="flagsAvailable.includes(item.original_language)" class="language" :src="'img/' + item.original_language + '.png'">
+            <h4 v-else>{{ item.original_language }}</h4>
+            <!-- stelle -->
+            <h4 class="vote">
+              <!--stella piena--><i class="fas fa-star" v-for="i in Math.floor(Math.round(item.vote_average) / 2)"></i><!-- mezza stella--><i class="fas fa-star-half-alt" v-if="(Math.round(item.vote_average) / 2) % 1 != 0"></i><!-- stella vuota--><i class="far fa-star" v-for="i in (5 - Math.round(Math.round(item.vote_average) / 2))"></i>
+            </h4>
+          </div>
+          <!-- lingua -->
+        </div>
+
+
       </div>
 
     </div>

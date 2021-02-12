@@ -13,7 +13,8 @@ var app = new Vue({
     query: '',
     api: '640221ae9d6dfeb3b525b2e0ac83a670',
     language: 'it-IT',
-    arrayMovies: ''
+    arrayMovies: '',
+    flagsAvailable: ['de', 'en', 'fr', 'it', 'ja', 'zh']
   },
   methods: {
     searchMovie() {
