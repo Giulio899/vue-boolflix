@@ -14,7 +14,7 @@ var app = new Vue({
     api: '640221ae9d6dfeb3b525b2e0ac83a670',
     language: 'it-IT',
     arrayMovies: '',
-    flagsAvailable: ['de', 'en', 'fr', 'it', 'ja', 'zh']
+    flagsAvailable: ['de', 'en', 'es', 'fr', 'ko', 'ro', 'it', 'ja', 'zh']
   },
   methods: {
     searchMovie() {
@@ -33,7 +33,8 @@ var app = new Vue({
           }
         })
         .then((result) => {
-          this.arrayMovies = result.data.results;
+          this.arrayMovies = this.arrayMovies.concat(result.data.results);
+
         })
         .catch((error) => alert('Errore')); //fine axios
 
