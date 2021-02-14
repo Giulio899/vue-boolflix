@@ -1,12 +1,3 @@
-// Milestone 1:
-// Creare un layout base con una searchbar (una input e un button) in cui possiamo scrivere completamente o parzialmente il nome di un film. Possiamo, cliccando il bottone, cercare sull’API tutti i film che contengono ciò che ha scritto l’utente.
-
-// Vogliamo dopo la risposta dell’API visualizzare a schermo i seguenti valori per ogni film trovato:
-// 1. Titolo
-// 2. Titolo Originale
-// 3. Lingua
-// 4. Voto
-
 var app = new Vue({
   el: '#app',
   data: {
@@ -15,34 +6,62 @@ var app = new Vue({
     language: 'it-IT',
     arrayMovies: '',
     genres: '',
-    flagsAvailable: ['de', 'en', 'es', 'fr', 'ko', 'ro', 'it', 'ja', 'zh']
+    tempGenres: '',
+    flagsAvailable: ['ar', 'de', 'en', 'es', 'fr', 'ko', 'ro', 'it', 'ja', 'zh'],
+    genreSelected: 'filtra',
+    active: false,
+    querySearched: '',
+    firstSearch: false,
+    arrayPopularMovies: [],
+    counter: 0
   },
   mounted() {
     // chiamata axios a generi film
     axios
       .get("https://api.themoviedb.org/3/genre/movie/list", {
         params: {
-          api_key: this.api
+          api_key: this.api,
+          language: this.language
         }
       })
       .then((result) => {
+
         this.genres = result.data.genres;
         // console.log(this.genres);
-      })
-      .catch((error) => alert('Errore'));
 
-    // chiamata axios a generi film
-    axios
-      .get("https://api.themoviedb.org/3/genre/tv/list", {
-        params: {
-          api_key: this.api
-        }
-      })
-      .then((result) => {
-        this.genres.concat(result.data.genres);
-        console.log('1', this.genres);
-      })
-      .catch((error) => alert('Errore'));
+        // chiamata axios a generi serie tv
+        axios
+        .get("https://api.themoviedb.org/3/genre/tv/list", {
+          params: {
+            api_key: this.api,
+            language: this.language
+          }
+        })
+        .then((result) => {
+          this.tempGenres = result.data.genres;
+          // console.log(this.tempGenres);
+
+          let ids = new Set(this.genres.map(item => item.id));
+          this.genres = [...this.genres, ...this.tempGenres.filter(item => !ids.has(item.id))];
+          // console.log(this.genres);
+        });
+        // .catch((error) => alert('Errore'));
+      });
+      // .catch((error) => alert('Errore'));
+
+      // chiamata axios per movie popolari
+      axios
+        .get("https://api.themoviedb.org/3/movie/popular", {
+          params: {
+            api_key: this.api,
+            language: this.language,
+            page: 1
+          }
+        })
+          .then((result) => {
+            this.arrayPopularMovies = result.data.results;
+            // console.log(this.arrayPopularMovies);
+        });
 
 
   }, // fine mounted
@@ -61,8 +80,36 @@ var app = new Vue({
         .then((result) => {
           this.arrayMovies = result.data.results;
 
-        })
-        .catch((error) => alert('Errore')); //fine prima chiamata axios
+          this.getCast(this.arrayMovies, 'movie');
+          // console.log(this.arrayMovies);
+
+          // CODICE PORTATO FUORI CON FUNZIONE GETCAST
+
+          // this.arrayMovies.forEach((item) => {
+          //   item.cast = [];
+          //   // console.log(this.arrayMovies);
+          //
+          //   axios
+          //   .get("https://api.themoviedb.org/3/movie/" + item.id + "/credits", {
+          //     params: {
+          //       api_key: this.api,
+          //       language: this.language,
+          //     }
+          //   })
+          //   .then((result) => {
+          //     var cast = [];
+          //     for (let i = 0; i < 5; i++) {
+          //       cast.push(result.data.cast[i].original_name);
+          //     }
+          //     item.cast = cast;
+          //   })
+          //   // .catch((error) => alert('Errore'));
+          //
+          // }) // fine for each
+
+        });
+        // .catch((error) => alert('Erroree'));
+        //fine prima chiamata axios
 
         // chiamata axios a db serietv
         axios
@@ -75,14 +122,24 @@ var app = new Vue({
           })
           .then((result) => {
             this.arrayMovies = this.arrayMovies.concat(result.data.results);
-          })
-          .catch((error) => alert('Errore')); //fine seconda chiamata axios
+
+            this.getCast(this.arrayMovies, 'tv');
+            // console.log(this.arrayMovies);
+          }); // fine then
+          // .catch((error) => alert('Errore'));
+          //fine seconda chiamata axios
 
     }, // fine searchMovie()
 
     search() {
-      this.searchMovie();
-      this.query = "";
+      if (this.query.length > 0) {
+        this.searchMovie();
+        this.querySearched = this.query;
+        this.querySearched = this.query;
+        this.query = "";
+        this.firstSearch = true;
+
+      }
     }, // fine search(): effettua la ricerca in base alla query digitata
 
 
@@ -94,13 +151,69 @@ var app = new Vue({
       var thisGenre;
       this.genres.forEach((item) => {
         if (idToCheck == item.id) {
-          console.log(item.name);
+          // console.log(item.name);
           thisGenre = item.name;
           return thisGenre;
         }
       });
       return thisGenre;
-    } // fine getGenre(): individua il genere del film in base all'id
+    }, // fine getGenre(): individua il genere del film in base all'id
+
+    changeActive() {
+      this.active = false;
+      // console.log(this.active);
+    },
+
+    getCast(array, castType) {
+
+      array.forEach((item) => {
+        item.cast = [];
+        // console.log(this.arrayMovies);
+
+        axios
+        .get("https://api.themoviedb.org/3/" + castType + "/" + item.id + "/credits", {
+          params: {
+            api_key: this.api,
+            language: this.language,
+          }
+        })
+        .then((result) => {
+          for (let i = 0; i < 5; i++) {
+            item.cast.push(result.data.cast[i].original_name);
+          }
+          // utilizzato per forzare la ri-renderizzazione dell'item nell'html
+          this.$forceUpdate()
+        })
+        // .catch((error) => alert('Errore'));
+
+      }) // fine for each
+    }, // fine getCast()
+    nextImg() {
+      if (this.counter == 4) {
+        this.counter = 0;
+      } else {
+        this.counter++;
+      }
+      // console.log(this.counter);
+    },
+    prevImg() {
+      if (this.counter == 0) {
+        this.counter = 4;
+      } else {
+        this.counter--;
+      }
+      // console.log(this.counter);
+    },
+    changeImg(i) {
+      this.counter = i;
+    },
+
+    backToHome() {
+      this.firstSearch = false;
+    }
 
   } // fine methods
+
+
+
 });

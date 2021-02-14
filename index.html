@@ -23,17 +23,19 @@
 
   <div id="app">
 
+    <!-- inizio header -->
     <header>
       <!-- logo -->
-        <img src="img/logo-prime.png" alt="Logo Boolflix">
+      <img src="img/logo-prime.png" alt="Logo Boolflix" @click="backToHome">
       <!-- nav centrale -->
       <nav>
-        <ul>
+        <!-- menu eventualmente da implementare -->
+        <!-- <ul>
           <li><a href="#">Home</a></li>
           <li><a href="#">Store</a></li>
           <li><a href="#">Canali</a></li>
           <li class="dropdown"><a href="#">Categorie</a></li>
-        </ul>
+        </ul> -->
       </nav>
       <!-- ricerca -->
       <div class="search">
@@ -42,54 +44,141 @@
         <i class="fas fa-search"></i>
       </div>
     </header>
+    <!-- /header -->
+
+    <!-- Inizio main -->
+    <main>
+
+      <!-- Filtro generi (attivo solo dopo prima ricerca) -->
+      <div class="filter" v-if="firstSearch">
+        <div class="filter-left">
+          <p v-if="arrayMovies.length > 0">{{ arrayMovies.length + " risultati per " + "\"" + querySearched + "\"." }}</p>
+          <p v-else-if="firstSearch">{{"Nessun risultato per " + "\"" + querySearched + "\"." }}</p>
+
+        </div>
+        <div class="filter-right">
+          <form @click="active=!active">
+            <!-- <label for="generi">Filtra per genere:</label> -->
+            <select name="generi" v-model="genreSelected" :class="{active:active}" @blur="changeActive">
+              <!-- <option value="all">All</option> -->
+              <option value="filtra" disabled> Filtra </option>
+              <option value="All"> All </option>
+              <option :value="item" v-for="item in genres">{{ item.name }}</option>
+            </select>
+            <!-- <i class="fas fa-angle-up"></i> -->
+            <i class="fas fa-angle-up" :class="{rotate: active}"></i>
+          </form>
+        </div>
+      </div>
 
 
-    <div class="container-movies">
+      <!-- Inizio jumbotron (visibile solo se non è ancora stata effettuata una ricerca) -->
+      <template v-else>
 
-      <div class="item-movie" v-for="item in arrayMovies">
-
-        <!-- immagine -->
-        <img v-if="item.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + item.poster_path" :alt="item.title">
-        <img v-else src="img/not-found.jpg" :alt="item.title">
-
-        <!-- box nascosto con informazioni -->
-        <div class="hidden">
-          <!-- titolo -->
-          <h3 class="title">{{ item.title || item.name }}</h3>
-          <p class="description">{{ (item.overview.length > 0) ? item.overview : 'Descrizione non disponibile' }}</p>
-          <!-- details(language and rate) -->
-          <div class="details">
-            <!-- lingua -->
-            <img v-if="flagsAvailable.includes(item.original_language)" class="language" :src="'img/' + item.original_language + '.png'">
-            <h4 v-else>{{ item.original_language }}</h4>
-            <!-- stelle -->
-            <h4 class="vote">
-              <!--stella piena--><i class="fas fa-star" v-for="i in Math.floor(Math.round(item.vote_average) / 2)"></i><!-- mezza stella--><i class="fas fa-star-half-alt" v-if="(Math.round(item.vote_average) / 2) % 1 != 0"></i><!-- stella vuota--><i class="far fa-star" v-for="i in (5 - Math.round(Math.round(item.vote_average) / 2))"></i>
-            </h4>
-            <!-- anno -->
-            <h4>{{ getYear(item.release_date || item.first_air_date) }}</h4>
+        <div class="jumbotron">
+          <!-- item carosello -->
+          <div class="jumbotron-content" v-for="(item, i) in arrayPopularMovies" v-if="i == counter">
+            <!-- img slider -->
+            <img :src="'https://image.tmdb.org/t/p/w1280/' + item.backdrop_path" alt="">
+            <div class="text">
+              <h2>{{ item.original_title }}</h2>
+              <p>{{ item.overview }}</p>
+            </div>
           </div>
-          <!-- generi -->
-          <h4>
-            <!-- se i generi sono indicati nell'array stampa questo -->
-            <template v-if="item.genre_ids.length > 0">
-              <span v-for="(element, i) in item.genre_ids" v-if="i != item.genre_ids.length -1">{{ getGenre(element) + ', ' }}</span>
-              <span v-else>{{ getGenre(element) }}</span>
-            </template>
-            <!-- se i generi NON sono indicati nell'array stampa questo -->
-            <template  v-else>
-              <span>Genere non disponibile</span>
-            </template>
-          </h4>
+          <!-- /item carosello -->
+
+          <!-- pallini slider -->
+          <div class="pallini">
+            <i class="fas fa-circle" v-for="(item, i) in arrayPopularMovies" v-if="i < 5" :class={active:i==counter} @click="changeImg(i)"></i>
+          </div>
+          <!-- frecce slider -->
+          <i class="fas fa-chevron-right" @click="nextImg"></i>
+          <i class="fas fa-chevron-left" @click="prevImg"></i>
+        </div>
+        <!-- /jumbotron -->
+
+        <!-- Inizio sezione popular now (visibile solo se non sono state effettuate ricerche) -->
+        <div class="popular-now">
+          <h2><span>Tranding</span> now</h2>
+          <div class="container-item">
+            <div class="item" v-for="(item, i) in arrayPopularMovies" v-if="i>5 && i < 12">
+              <img :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" alt="">
+            </div>
+
+          </div>
         </div>
 
+      </template>
+
+
+
+      <!-- Container risultati -->
+      <div class="container-movies" v-if="firstSearch">
+
+        <div class="item-movie" v-for="item in arrayMovies" v-if="genreSelected == 'All' || genreSelected == 'filtra' || item.genre_ids.includes(genreSelected.id)">
+
+          <!-- immagine -->
+          <img v-if="item.poster_path != null" :src="'https://image.tmdb.org/t/p/w342/' + item.poster_path" :alt="item.title">
+          <img v-else src="img/not-found.jpg" :alt="item.title">
+
+          <!-- box nascosto con informazioni -->
+          <div class="hidden">
+            <!-- titolo -->
+            <h3 class="title">{{ item.title || item.name }}</h3>
+            <!-- generi -->
+            <h4>
+              <!-- se i generi sono indicati nell'array stampa questo -->
+              <template v-if="item.genre_ids.length > 0">
+                <span v-for="(element, i) in item.genre_ids" v-if="i != item.genre_ids.length -1">{{ getGenre(element) + ', ' }}</span>
+                <span v-else>{{ getGenre(element) }}</span>
+              </template>
+              <!-- se i generi NON sono indicati nell'array stampa questo -->
+              <template v-else>
+                <span>Genere non disponibile</span>
+              </template>
+            </h4>
+            <!-- descrizione -->
+            <p class="description">{{ (item.overview.length > 0) ? item.overview : 'Descrizione non disponibile' }}</p>
+            <!-- cast -->
+            <p class="cast">
+              <span class="title">Cast</span><span>:</span>
+              <template v-if="item.cast.length > 0">
+                <span v-for="(element, i) in item.cast" v-if="i != item.cast.length - 1">{{ element + ', ' }}</span>
+                <span v-else>{{ element }}</span>
+              </template>
+              <template v-else>
+                <span> Informazioni non disponibili </span>
+              </template>
+
+            </p>
+            <!-- details(language and rate) -->
+            <div class="details">
+              <!-- lingua -->
+              <img v-if="flagsAvailable.includes(item.original_language)" class="language" :src="'img/' + item.original_language + '.png'">
+              <h4 v-else>{{ item.original_language }}</h4>
+              <!-- stelle -->
+              <h4 class="vote">
+                <!--stella piena--><i class="fas fa-star" v-for="i in Math.floor(Math.round(item.vote_average) / 2)"></i><!-- mezza stella--><i class="fas fa-star-half-alt" v-if="(Math.round(item.vote_average) / 2) % 1 != 0"></i><!-- stella vuota--><i class="far fa-star" v-for="i in (5 - Math.round(Math.round(item.vote_average) / 2))"></i>
+              </h4>
+              <!-- anno -->
+              <h4>{{ getYear(item.release_date || item.first_air_date) }}</h4>
+            </div>
+
+          </div>
+
+
+        </div>
 
       </div>
 
-    </div>
+    </main>
+    <!-- /main -->
 
 
-  </div>
+
+
+
+  </div> <!-- fine app -->
 
   <script src="js/script.js" charset="utf-8"></script>
 </body>

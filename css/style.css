@@ -11,6 +11,7 @@ h4 {
 body {
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
+  background-color: #0F171E;
 }
 
 /* Inizio header */
@@ -20,11 +21,16 @@ header {
   display: flex;
   align-items: center;
   padding: 0 60px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
 }
 
 /* header left */
 header img {
   height: 40px;
+  cursor: pointer;
 }
 
 /* header center */
@@ -101,6 +107,7 @@ header .search input:focus::placeholder {
 }
 
 header .search .fa-search {
+  font-size: 1.1em;
   position: absolute;
   top: 40%;
   right: 0;
@@ -108,7 +115,6 @@ header .search .fa-search {
   color: #babdc0;
   pointer-events: none;
   transition: transform .4s ease;
-
 }
 
 header .search input:focus + .fa-search {
@@ -119,12 +125,217 @@ header .search input:hover + .fa-search {
   color: white;
 }
 
+/* Inizio main */
+main .jumbotron {
+  height: 400px;
+  margin-top: 80px;
+  overflow: hidden;
+  position: relative;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0));
+}
+
+main .jumbotron img {
+  width: 100%;
+  object-fit: cover;
+  object-position: 0 -90px;
+  position: relative;
+  z-index: -1;
+}
+
+main .jumbotron .text {
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  margin-left: 80px;
+  transform: translateY(-50%);
+  color: white;
+}
+
+main .jumbotron .text h2 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+main .jumbotron .text p {
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  color: white;
+}
+
+main .pallini {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+main .pallini .fa-circle {
+  margin-right: 5px;
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+main .pallini .fa-circle:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+main .fa-circle.active {
+  color: white;
+}
+
+main .fa-chevron-right,
+main .fa-chevron-left {
+  position: absolute;
+  top: 170px;
+  font-size: 3em;
+  color: white;
+  cursor: pointer;
+}
+
+main .fa-chevron-right {
+  right: 20px;
+}
+
+main .fa-chevron-left {
+  left: 20px;
+}
+/* fine sezione jumbotron */
+
+/* Inizio sezione popular now */
+main .popular-now {
+  padding: 10px 60px;
+  font-size: .9em;
+}
+
+main .popular-now h2 {
+  color: white;
+}
+
+main .popular-now h2 span {
+  color: #00a8e1;
+}
+
+main .popular-now .container-item {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+main .popular-now .container-item .item {
+  flex-basis: calc(100% / 6 - 10px);
+  margin-top: 20px;
+  overflow: hidden;
+  margin-right: 10px;
+  border-radius: 3px;
+  border: 1px solid #00a8e1;
+  transition: all .5s;
+}
+
+main .popular-now .container-item .item:hover {
+  transform: scale(1.3);
+}
+
+main .popular-now .container-item img {
+  width: 100%;
+}
+
+
+
+/* Inizio generi */
+.filter {
+  height: 80px;
+  background-color: #0f171e;
+  border-bottom: 1px solid #566B84;
+  padding: 0 60px;
+  display: flex;
+  align-items: center;
+  /* margin-top necessario perché il menu è fixed e quindi esce dal flusso */
+  margin-top: 80px;
+}
+
+.filter .filter-left {
+  flex-basis: 30%;
+}
+
+.filter .filter-right {
+  flex-basis: 70%;
+  text-align: right;
+}
+
+.filter p {
+  color: #566B84;
+}
+
+.filter form {
+  display: inline-block;
+  position: relative;
+}
+
+.filter select {
+  width: 200px;
+  height: 37px;
+  background-color: #566B84;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  /* per far scomparire la freccia */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.filter select option[disabled] {
+  color: darkgrey;
+}
+
+.filter select option:disabled {
+  color: darkgrey;
+}
+
+.filter select:hover {
+  background-color: #5d7795;
+}
+
+.filter select.active {
+  background-color: #5d7795;
+}
+
+
+.filter .fa-angle-up {
+  color: white;
+  font-size: 1.2em;
+  position: absolute;
+  top: 0px;
+  right: 15px;
+}
+
+.filter .fa-angle-up {
+  color: white;
+  font-size: 1.3em;
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  pointer-events: none;
+  transition: transform .5s;
+}
+
+.filter .fa-angle-up.rotate {
+  transform: rotateZ(180deg);
+}
+
 /* Inizio container */
 
 .container-movies {
   display: flex;
   flex-wrap: wrap;
-  padding: 40px;
+  padding: 20px 60px;
   background-color: #0F171E;
 }
 
@@ -141,13 +352,18 @@ header .search input:hover + .fa-search {
   width: 100%;
   height: 100%;
   /* border: 3px solid purple; */
-  background-color: rgba(27, 37, 48, 0.8);
+  background-color: rgba(27, 37, 48, 0.9);
   position: absolute;
   top: 0;
   left: 0;
   padding: 20px;
   /* opacity: 0; */
+  transform: translateY(-100%);
   transition: transform .5s;
+}
+
+.container-movies .item-movie:hover .hidden {
+  transform: translateY(0);
 }
 
 .container-movies .item-movie .hidden h3.title {
@@ -156,9 +372,36 @@ header .search input:hover + .fa-search {
   margin-bottom: 5px;
 }
 
+.container-movies .item-movie .hidden h4 span {
+  color: white;
+  font-size: .95em;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* description */
+.container-movies .item-movie .hidden .description {
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  color: white;
+}
+
 .container-movies .item-movie .hidden p {
   font-size: .9em;
-  margin-bottom: 5px;
+  margin: 15px 0;
+}
+
+/* cast */
+.container-movies .item-movie .hidden p.cast span {
+  color: white;
+  font-size: .9em;
+}
+
+.container-movies .item-movie .hidden p span.title {
+  text-decoration: underline;
 }
 
 .container-movies .item-movie .hidden img.language {
@@ -168,7 +411,6 @@ header .search input:hover + .fa-search {
 .container-movies .item-movie .hidden .details {
   display: flex;
   align-items: center;
-  margin-top: 10px;
 }
 
 .container-movies .item-movie .hidden .details h4 {
@@ -179,36 +421,12 @@ header .search input:hover + .fa-search {
 
 .container-movies .item-movie .hidden .details .vote {
   color: #fa9c1c;
-  margin: 0 10px;
+  margin: 10px;
 }
 
-.container-movies .item-movie .hidden h4 span {
-  color: white;
-  font-size: .95em;
-  font-weight: 400;
-}
 /* /box hidden */
 
 .container-movies .item-movie img {
   width: 100%;
   height: 100%;
-}
-
-.container-movies .item-movie .hidden .description {
-  overflow : hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  color: white;
-}
-
-.container-movies .item-movie:hover .hidden {
-  /* transform: translateY(-100%); */
-}
-
-
-
-.container-movies .item-movie span {
-  color: red;
 }
